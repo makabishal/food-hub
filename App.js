@@ -1,20 +1,48 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { Text, StyleSheet } from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import WelcomeScreen from './components/screens/WelcomeScreen';
+import FoodDetailScreen from './components/screens/FoodDetailScreen';
+import DashboardNavigator from "./components/navigation/DashboardNavigator";
+import {FavoriteProvider} from "./components/context/FavoriteProvider/FavoriteProvider";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const Stack = createStackNavigator();
+
+const App = () => {
+    return (
+        <FavoriteProvider>
+            <NavigationContainer>
+                <Stack.Navigator initialRouteName="Welcome">
+                    <Stack.Screen name="Welcome" component={WelcomeScreen}
+                                  options={{headerShown: false, headerStyle: {backgroundColor: "red"}}}/>
+                    <Stack.Screen name="Dashboard" component={DashboardNavigator} options={{headerShown: false}}/>
+                    <Stack.Screen
+                        name="FoodDetail"
+                        component={FoodDetailScreen}
+                        options={({ route }) => ({
+                            title: route.params?.name ?? "FoodDetail",
+                            headerStyle: {backgroundColor: "transparent", elevation: 0},
+                        })}
+                    />
+
+                </Stack.Navigator>
+            </NavigationContainer>
+        </FavoriteProvider>
+    );
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    headerTitle: {
+        fontSize: 20,
+        color: 'white',
+    },
 });
+
+
+export default App;
